@@ -129,7 +129,7 @@ function detail(r) {
   return `<div class="dt"><div style="margin-bottom:10px"><i class="ti ti-info-circle" style="color:#7C3AED"></i> ${msg}</div><div class="dg">
     <div class="db"><div class="t" style="color:#7C3AED"><i class="ti ti-file-text"></i> Permohonan</div>${ln("Mohon 5+",r.m5)}${ln("Mohon 6+",r.m6)}${ln("Jumlah mohon",r.m5+r.m6)}${ln("Ke sekolah lain",r.keLain)}</div>
     <div class="db"><div class="t" style="color:#00796B"><i class="ti ti-user-check"></i> Kelulusan</div>${ap.map(a => ln(a[0], a[1])).join("")}
-      <div style="border-top:1px solid #E5E7EB;margin-top:4px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"#111827")}${ln("Warganegara",r.l-r.bw,"#1F5FD1")}${ln("Kapasiti",r.k,"#111827")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"#C9184A":"#00796B")}</div></div>
+      <div style="border-top:2px solid #151515;margin-top:6px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"#111827")}${ln("Warganegara",r.l-r.bw,"#1F5FD1")}${ln("Kapasiti",r.k,"#111827")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"#C9184A":"#00796B")}</div></div>
   </div></div>`;
 }
 
