@@ -94,9 +94,9 @@ function toRecords(rows) {
 /* ---------- 3. Paparan ---------- */
 const JN = [["ALL","Semua","ti-layout-grid"],["JBA","SK (JBA)","ti-school"],["JBB","SK (JBB)","ti-building"],["JBC","SJKC","ti-books"],["JBD","SJKT","ti-book"]];
 const C = {
-  over: { s:"#EF4444", bg:"#FEF2F2", tx:"#B91C1C", t:"Melebihi", f:"#FF3B30" },
-  near: { s:"#F59E0B", bg:"#FFFBEB", tx:"#B45309", t:"Hampir penuh", f:"#F2C200" },
-  ok:   { s:"#22C55E", bg:"#F0FDF4", tx:"#15803D", t:"Ada ruang", f:"#22D046" }
+  over: { s:"#FF4D6D", bg:"#FFE3EA", tx:"#C9184A", t:"Melebihi", f:"#FF4D6D" },
+  near: { s:"#FFB000", bg:"#FFF1C7", tx:"#8A5A00", t:"Hampir penuh", f:"#FFB000" },
+  ok:   { s:"#00C2A8", bg:"#D9F7F2", tx:"#00796B", t:"Ada ruang", f:"#00C2A8" }
 };
 const STRIPE = "repeating-linear-gradient(120deg,rgba(255,255,255,.16) 0 2px,transparent 2px 6px)";
 const S = { j:"ALL", s:"ALL", q:"", n:20, o:null, bw:false };
@@ -107,29 +107,29 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">"
 function meter(r) {
   const s = C[st(r.p)];
   const bar = r.d > 0
-    ? `<div class="bl" style="flex:1;background:${STRIPE},${s.f}"></div><div class="dv" style="background:#111827"></div><div class="bl" style="width:${Math.max(Math.min(r.d / r.k, 0.4), 0.18) * 100}%;flex-shrink:0;background:${STRIPE},#B91C1C"></div>`
+    ? `<div class="bl" style="flex:1;background:${STRIPE},${s.f}"></div><div class="dv" style="background:#111827"></div><div class="bl" style="width:${Math.max(Math.min(r.d / r.k, 0.4), 0.18) * 100}%;flex-shrink:0;background:${STRIPE},#C9184A"></div>`
     : `<div class="bl" style="width:calc(${Math.min(r.p * 100, 100)}% - 3px);flex-shrink:0;background:${STRIPE},${s.f}"></div><div class="dv"></div><div class="gr"></div>`;
   return `<span style="display:flex;align-items:center;justify-content:center;gap:6px"><span class="mt">${bar}</span><span class="pc" style="color:${s.tx}">${pct(r.p * 100)}</span></span>`;
 }
 function lab(r) {
-  if (r.d > 0) return `<span class="tg" style="background:#FEF2F2;color:#B91C1C">Lebih ${r.d}</span>`;
-  if (r.d === 0) return `<span class="tg" style="background:#FFFBEB;color:#B45309">Penuh</span>`;
+  if (r.d > 0) return `<span class="tg" style="background:#FFE3EA;color:#C9184A">Lebih ${r.d}</span>`;
+  if (r.d === 0) return `<span class="tg" style="background:#FFF1C7;color:#8A5A00">Penuh</span>`;
   const s = C[st(r.p)];
   return `<span class="tg" style="background:${s.bg};color:${s.tx}">${-r.d} tempat</span>`;
 }
 function detail(r) {
   const s = C[st(r.p)], x = r.parts;
   const msg = r.d > 0
-    ? `Sekolah ini <b style="color:#B91C1C">melebihi kapasiti sebanyak ${r.d} murid</b> (${pct(r.p*100)}): ${r.l} lulus berbanding kapasiti ${r.k}.`
+    ? `Sekolah ini <b style="color:#C9184A">melebihi kapasiti sebanyak ${r.d} murid</b> (${pct(r.p*100)}): ${r.l} lulus berbanding kapasiti ${r.k}.`
     : r.d === 0
-    ? `Sekolah ini <b style="color:#B45309">penuh tepat</b> (100.0%): ${r.l} lulus, kapasiti ${r.k}.`
+    ? `Sekolah ini <b style="color:#8A5A00">penuh tepat</b> (100.0%): ${r.l} lulus, kapasiti ${r.k}.`
     : `Sekolah ini <b style="color:${s.tx}">boleh muat lagi ${-r.d} murid</b> (${pct(r.p*100)} terisi): ${r.l} lulus daripada kapasiti ${r.k}.`;
   const ln = (a, b, cl) => `<div class="ln"><span class="sec">${a}</span><span class="v" style="${b === 0 && !cl ? "color:#9CA3AF;" : ""}${cl ? `color:${cl}` : ""}">${b}</span></div>`;
   const ap = [["A · Diluluskan sistem",x.A],["B · Lulus dari sekolah lain",x.B],["C · Kelulusan 5+ manual",x.C],["D · Kelulusan 6+ manual",x.D],["E · Rayuan online",x.E],["F · Bukan warganegara",x.F],["G · Lewat / ASBS",x.G]];
-  return `<div class="dt"><div style="margin-bottom:10px"><i class="ti ti-info-circle" style="color:#2563EB"></i> ${msg}</div><div class="dg">
-    <div class="db"><div class="t" style="color:#2563EB"><i class="ti ti-file-text"></i> Permohonan</div>${ln("Mohon 5+",r.m5)}${ln("Mohon 6+",r.m6)}${ln("Jumlah mohon",r.m5+r.m6)}${ln("Ke sekolah lain",r.keLain)}</div>
-    <div class="db"><div class="t" style="color:#16A34A"><i class="ti ti-user-check"></i> Kelulusan</div>${ap.map(a => ln(a[0], a[1])).join("")}
-      <div style="border-top:1px solid #E5E7EB;margin-top:4px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"#111827")}${ln("Warganegara",r.l-r.bw,"#0E7490")}${ln("Kapasiti",r.k,"#111827")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"#B91C1C":"#15803D")}</div></div>
+  return `<div class="dt"><div style="margin-bottom:10px"><i class="ti ti-info-circle" style="color:#7C3AED"></i> ${msg}</div><div class="dg">
+    <div class="db"><div class="t" style="color:#7C3AED"><i class="ti ti-file-text"></i> Permohonan</div>${ln("Mohon 5+",r.m5)}${ln("Mohon 6+",r.m6)}${ln("Jumlah mohon",r.m5+r.m6)}${ln("Ke sekolah lain",r.keLain)}</div>
+    <div class="db"><div class="t" style="color:#00796B"><i class="ti ti-user-check"></i> Kelulusan</div>${ap.map(a => ln(a[0], a[1])).join("")}
+      <div style="border-top:1px solid #E5E7EB;margin-top:4px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"#111827")}${ln("Warganegara",r.l-r.bw,"#1F5FD1")}${ln("Kapasiti",r.k,"#111827")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"#C9184A":"#00796B")}</div></div>
   </div></div>`;
 }
 
@@ -152,19 +152,19 @@ function draw() {
   const tl = base.reduce((a, r) => a + r.l, 0), tb = base.reduce((a, r) => a + r.bw, 0), tw = tl - tb;
   const nb = base.filter(r => r.bw > 0).length, pw = tl ? tw / tl * 100 : 0, pb = tl ? tb / tl * 100 : 0;
   $("wg").innerHTML = `<div class="wg3">
-    <div class="wgc" style="background:#ECFEFF;color:#0E7490"><div class="t"><i class="ti ti-flag"></i>Warganegara</div><div class="v">${fmt(tw)}</div><div class="s">${pct(pw)} daripada lulus</div></div>
-    <div class="wgc" style="background:#F5F3FF;color:#6D28D9"><div class="t"><i class="ti ti-world"></i>Bukan warganegara</div><div class="v">${fmt(tb)}</div><div class="s">${pct(pb)} · di ${nb} sekolah</div></div>
+    <div class="wgc" style="background:#E0EDFF;color:#1F5FD1"><div class="t"><i class="ti ti-flag"></i>Warganegara</div><div class="v">${fmt(tw)}</div><div class="s">${pct(pw)} daripada lulus</div></div>
+    <div class="wgc" style="background:#FFE0F0;color:#C2185B"><div class="t"><i class="ti ti-world"></i>Bukan warganegara</div><div class="v">${fmt(tb)}</div><div class="s">${pct(pb)} · di ${nb} sekolah</div></div>
     <div class="wgc" style="background:#F3F4F6;color:#111827"><div class="t"><i class="ti ti-users"></i>Jumlah murid lulus</div><div class="v">${fmt(tl)}</div><div class="s sec">warganegara + bukan warganegara</div></div></div>
-    <div class="split"><div style="width:${pw}%;background:#06B6D4"></div>${tb ? `<div style="width:max(${pb}%,6px);background:#8B5CF6"></div>` : ""}</div>`;
-  $("bwb").innerHTML = `<span role="button" id="bwt" class="tg" style="cursor:pointer;padding:5px 10px;background:${S.bw ? "#7C3AED" : "#F5F3FF"};color:${S.bw ? "#fff" : "#6D28D9"}"><i class="ti ti-filter"></i> ${S.bw ? "Papar semua sekolah" : "Tapis sekolah ada bukan warganegara"}</span>`;
+    <div class="split"><div style="width:${pw}%;background:#3A86FF"></div>${tb ? `<div style="width:max(${pb}%,6px);background:#FF006E"></div>` : ""}</div>`;
+  $("bwb").innerHTML = `<span role="button" id="bwt" class="tg" style="cursor:pointer;padding:5px 10px;background:${S.bw ? "#FF006E" : "#FFE0F0"};color:${S.bw ? "#fff" : "#C2185B"}"><i class="ti ti-filter"></i> ${S.bw ? "Papar semua sekolah" : "Tapis sekolah ada bukan warganegara"}</span>`;
   $("bwt").onclick = () => { S.bw = !S.bw; draw(); };
 
   // KPI
   const c = { over: 0, near: 0, ok: 0 }; base.forEach(r => c[st(r.p)]++);
-  const K = [["ALL","Jumlah sekolah",base.length,"#2563EB","ti-school","#EFF6FF","#1D4ED8","Semua"],
-             ["over","Melebihi kapasiti",c.over,"#EF4444","ti-alert-circle",C.over.bg,C.over.tx,"> 100%"],
-             ["near","Hampir penuh",c.near,"#F59E0B","ti-alert-triangle",C.near.bg,C.near.tx,"90 – 100%"],
-             ["ok","Ada ruang",c.ok,"#22C55E","ti-circle-check",C.ok.bg,C.ok.tx,"< 90%"]];
+  const K = [["ALL","Jumlah sekolah",base.length,"#7C3AED","ti-school","#EDE4FF","#5B21B6","Semua"],
+             ["over","Melebihi kapasiti",c.over,"#FF4D6D","ti-alert-circle",C.over.bg,C.over.tx,"> 100%"],
+             ["near","Hampir penuh",c.near,"#FFB000","ti-alert-triangle",C.near.bg,C.near.tx,"90 – 100%"],
+             ["ok","Ada ruang",c.ok,"#00C2A8","ti-circle-check",C.ok.bg,C.ok.tx,"< 90%"]];
   $("kp").innerHTML = K.map(([v, t, n, cl, ic, bg, tx, sub]) => `<div class="k" data-v="${v}" style="${S.s === v ? `border:2px solid ${cl};padding:12px` : ""}">
     <div class="top2"><div class="ic" style="background:${cl}"><i class="ti ${ic}"></i></div><span class="tg" style="background:${bg};color:${tx}">${sub}</span></div>
     <div class="num">${n}</div><div class="sec">${t}</div></div>`).join("");
@@ -192,9 +192,9 @@ function draw() {
     const op = S.o === r.cd;
     return `<div class="row gd${op ? " open" : ""}" data-c="${r.cd}">
       <span class="tg code">${r.cd}</span>
-      <span class="nm">${esc(r.n)}${S.bw ? ` <span class="tg" style="background:#F5F3FF;color:#6D28D9">${r.bw} BW</span>` : ""}</span>
+      <span class="nm">${esc(r.n)}${S.bw ? ` <span class="tg" style="background:#FFE0F0;color:#C2185B">${r.bw} BW</span>` : ""}</span>
       <span class="c">${r.c}</span>
-      <span class="c" style="color:${r.m > CFG.MAX_PER_CLASS ? "#B91C1C" : "#374151"}">${r.m.toFixed(1)}</span>
+      <span class="c" style="color:${r.m > CFG.MAX_PER_CLASS ? "#C9184A" : "#374151"}">${r.m.toFixed(1)}</span>
       <span class="c" style="font-weight:600">${r.l}</span>
       <span class="c sec">${r.k}</span>
       ${meter(r)}
