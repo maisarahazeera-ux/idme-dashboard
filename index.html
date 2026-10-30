@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Permohonan Tahun 1 2027 · PPD Johor Bahru</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="d">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo"><i class="ti ti-school"></i></div>
+      <div>
+        <h1>Permohonan Tahun 1 2027</h1>
+        <div class="sec">Kapasiti sekolah · PPD Johor Bahru</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="upd">
+        <span id="upd" class="sec">Memuatkan data…</span>
+        <button id="reload" class="btn" title="Ambil data terkini"><i class="ti ti-refresh"></i> Muat semula</button>
+      </div>
+      <div class="search"><i class="ti ti-search"></i><input id="q" placeholder="Cari nama atau kod"></div>
+    </div>
+  </header>
+
+  <div id="err" class="err" hidden></div>
+
+  <div class="sec small lbl">Jenis sekolah</div>
+  <div id="jn" class="tb"></div>
+
+  <div id="kp" class="kpis"></div>
+
+  <section class="cd">
+    <div class="cd-head">
+      <div class="h"><i class="ti ti-id-badge-2" style="color:#0891B2"></i>Kewarganegaraan murid lulus</div>
+      <span id="bwb"></span>
+    </div>
+    <div id="wg"></div>
+  </section>
+
+  <div class="two">
+    <section class="cd">
+      <div class="h mb10"><i class="ti ti-chart-donut" style="color:#9333EA"></i>Taburan status</div>
+      <div class="donut-wrap">
+        <svg id="dn" viewBox="0 0 42 42" width="110" height="110" role="img" aria-label="Taburan status"></svg>
+        <div id="lg" class="legend"></div>
+      </div>
+    </section>
+    <section class="cd">
+      <div class="h mb6"><i class="ti ti-building-community" style="color:#2563EB"></i>Status ikut jenis sekolah</div>
+      <div id="sj"></div>
+    </section>
+  </div>
+
+  <section class="cd">
+    <div class="cd-head">
+      <div class="h"><i class="ti ti-list-details" style="color:#2563EB"></i>Kapasiti setiap sekolah</div>
+      <div class="show"><span class="sec">Tunjuk</span><div class="sg" id="nn"></div></div>
+    </div>
+    <div class="sec small hint"><span><i class="ti ti-pointer"></i> Klik sekolah untuk lihat butiran</span><span id="ct"></span></div>
+    <div class="legend-bar">
+      <span><b>Lulus</b> = murid diluluskan</span>
+      <span><b>Kapasiti</b> = had maksimum murid</span>
+      <span><b>Muat lagi</b> = kapasiti − lulus</span>
+      <span class="mini"><span class="mini-m"><span class="f"></span><span class="v"></span><span class="g"></span></span>warna = terisi, kelabu = kosong</span>
+    </div>
+    <div class="gd ghead">
+      <span>KOD</span><span>SEKOLAH</span><span class="c">KELAS</span><span class="c">MURID / KELAS</span>
+      <span class="c">LULUS</span><span class="c">KAPASITI</span><span class="c">% TERISI</span><span class="c">MUAT LAGI</span><span></span>
+    </div>
+    <div id="br"></div>
+  </section>
+
+  <footer class="sec small foot">Sumber data: Google Sheet "DATA PERMOHONAN TAHUN 1 2027". Dashboard ambil data baru secara automatik.</footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
