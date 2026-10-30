@@ -6,8 +6,8 @@ window.IDME_CONFIG = {
   // gid tab sheet (nombor selepas gid= dalam URL)
   GID: "1334777880",
 
-  // Berapa kerap dashboard ambil data baru (minit)
-  REFRESH_MINUTES: 2,
+  // Berapa kerap dashboard semak data baru (saat). Minimum 5.
+  REFRESH_SECONDS: 5,
 
   // Untuk ujian tanpa internet: letak "sample.csv". Biarkan "" untuk guna Google Sheet.
   LOCAL_CSV: "",

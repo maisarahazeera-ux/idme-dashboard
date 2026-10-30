@@ -21,10 +21,10 @@ async function fetchRows() {
     try {
       const sep = url.includes("?") ? "&" : "?";
       const res = await fetch(url + sep + "_=" + Date.now(), { cache: "no-store" });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) throw new Error(res.status === 429 ? "Google hadkan permintaan (terlalu kerap). Akan cuba lagi." : `HTTP ${res.status}`);
       const text = await res.text();
       if (text.trimStart().startsWith("<")) throw new Error("Sheet tidak boleh diakses (pastikan 'Anyone with the link: Viewer').");
-      return Papa.parse(text, { skipEmptyLines: false }).data;
+      return text;
     } catch (e) { lastErr = e; }
   }
   throw lastErr;
@@ -205,24 +205,33 @@ function draw() {
 }
 
 /* ---------- 4. Muat & kemaskini automatik ---------- */
-async function load() {
-  const btn = $("reload"); btn.classList.add("spin");
+let busy = false, lastText = "", lastChange = "";
+const now = () => new Date().toLocaleString("ms-MY", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" });
+async function load(manual) {
+  if (busy) return;
+  if (!manual && document.hidden) return;            // tab tak dibuka: jangan ambil data
+  busy = true;
+  const btn = $("reload"); if (manual) btn.classList.add("spin");
   try {
-    R = toRecords(await fetchRows());
+    const text = await fetchRows();
+    if (text !== lastText) {                          // lukis semula hanya bila data berubah
+      R = toRecords(Papa.parse(text, { skipEmptyLines: false }).data);
+      lastText = text;
+      draw();
+      lastChange = now();
+    }
     $("err").hidden = true;
-    const t = new Date().toLocaleString("ms-MY", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    $("upd").innerHTML = `<i class="ti ti-clock"></i> Kemaskini terakhir: <b>${t}</b>`;
-    draw();
+    $("upd").innerHTML = `<i class="ti ti-clock"></i> Disemak: <b>${now()}</b> · Data berubah: <b>${lastChange}</b>`;
   } catch (e) {
     $("err").hidden = false;
     $("err").innerHTML = `<b>Gagal ambil data.</b> ${esc(e.message)}${R.length ? " Data sebelum ini masih dipaparkan." : ""}`;
     if (!R.length) $("upd").textContent = "Tiada data";
-  } finally { btn.classList.remove("spin"); }
+  } finally { busy = false; btn.classList.remove("spin"); }
 }
 
 $("q").oninput = e => { S.q = e.target.value; draw(); };
-$("reload").onclick = load;
-load();
-setInterval(load, CFG.REFRESH_MINUTES * 60 * 1000);
+$("reload").onclick = () => load(true);
+load(true);
+setInterval(load, Math.max(5, CFG.REFRESH_SECONDS || 5) * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
 })();
