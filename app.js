@@ -232,6 +232,6 @@ async function load(manual) {
 $("q").oninput = e => { S.q = e.target.value; draw(); };
 $("reload").onclick = () => load(true);
 load(true);
-setInterval(load, Math.max(5, CFG.REFRESH_SECONDS || 5) * 1000);
+setInterval(load, Math.max(1, CFG.REFRESH_SECONDS || 5) * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) load(); });
 })();
