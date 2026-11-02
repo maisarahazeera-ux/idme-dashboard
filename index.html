@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
-<body>
+<body class="th-pop">
 <div id="d">
 
   <header class="top">
@@ -21,6 +21,7 @@
       </div>
     </div>
     <div class="top-right">
+      <label class="theme" title="Tukar tema"><i class="ti ti-palette"></i><select id="theme"></select></label>
       <div class="upd">
         <span id="upd" class="sec">Memuatkan data…</span>
         <button id="reload" class="btn" title="Ambil data terkini"><i class="ti ti-refresh"></i> Muat semula</button>
@@ -38,7 +39,7 @@
 
   <section class="cd">
     <div class="cd-head">
-      <div class="h"><i class="ti ti-id-badge-2" style="color:#3A86FF"></i>Kewarganegaraan murid lulus</div>
+      <div class="h"><i class="ti ti-id-badge-2" style="color:var(--wn)"></i>Kewarganegaraan murid lulus</div>
       <span id="bwb"></span>
     </div>
     <div id="wg"></div>
@@ -46,21 +47,21 @@
 
   <div class="two">
     <section class="cd">
-      <div class="h mb10"><i class="ti ti-chart-donut" style="color:#FF006E"></i>Taburan status</div>
+      <div class="h mb10"><i class="ti ti-chart-donut" style="color:var(--bwn)"></i>Taburan status</div>
       <div class="donut-wrap">
         <svg id="dn" viewBox="0 0 42 42" width="110" height="110" role="img" aria-label="Taburan status"></svg>
         <div id="lg" class="legend"></div>
       </div>
     </section>
     <section class="cd">
-      <div class="h mb6"><i class="ti ti-building-community" style="color:#7C3AED"></i>Status ikut jenis sekolah</div>
+      <div class="h mb6"><i class="ti ti-building-community" style="color:var(--acc)"></i>Status ikut jenis sekolah</div>
       <div id="sj"></div>
     </section>
   </div>
 
   <section class="cd">
     <div class="cd-head">
-      <div class="h"><i class="ti ti-list-details" style="color:#7C3AED"></i>Kapasiti setiap sekolah</div>
+      <div class="h"><i class="ti ti-list-details" style="color:var(--acc)"></i>Kapasiti setiap sekolah</div>
       <div class="show"><span class="sec">Tunjuk</span><div class="sg" id="nn"></div></div>
     </div>
     <div class="sec small hint"><span><i class="ti ti-pointer"></i> Klik sekolah untuk lihat butiran</span><span id="ct"></span></div>
@@ -81,7 +82,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-<script src="config.js?v=4"></script>
-<script src="app.js?v=4"></script>
+<script src="config.js?v=6"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>

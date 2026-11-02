@@ -12,6 +12,10 @@ window.IDME_CONFIG = {
   // Untuk ujian tanpa internet: letak "sample.csv". Biarkan "" untuk guna Google Sheet.
   LOCAL_CSV: "",
 
+  // Tema asal: "pop", "ios", "gelap"
+  // (Pengguna boleh tukar sendiri; pilihan disimpan dalam browser masing-masing)
+  DEFAULT_THEME: "pop",
+
   // Had murid sekelas (nilai lebih dari ini ditanda merah)
   MAX_PER_CLASS: 35
 };

@@ -5,6 +5,19 @@ const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString("en-US");
 const pct = v => v.toFixed(1) + "%";
 
+/* ---------- 0. Tema ---------- */
+const THEMES = [["pop","Pop bold"],["ios","iOS"],["gelap","Gelap"]];
+function getTheme() { try { return localStorage.getItem("idme-theme") || CFG.DEFAULT_THEME || "pop"; } catch (e) { return CFG.DEFAULT_THEME || "pop"; } }
+function setTheme(t) {
+  if (!THEMES.some(x => x[0] === t)) t = "pop";
+  document.body.className = "th-" + t;
+  try { localStorage.setItem("idme-theme", t); } catch (e) {}
+  return t;
+}
+$("theme").innerHTML = THEMES.map(([v, n]) => `<option value="${v}">${n}</option>`).join("");
+$("theme").value = setTheme(getTheme());
+$("theme").onchange = e => setTheme(e.target.value);
+
 /* ---------- 1. Ambil data ---------- */
 function sources() {
   if (CFG.LOCAL_CSV) return [CFG.LOCAL_CSV];
@@ -94,9 +107,9 @@ function toRecords(rows) {
 /* ---------- 3. Paparan ---------- */
 const JN = [["ALL","Semua","ti-layout-grid"],["JBA","SK (JBA)","ti-school"],["JBB","SK (JBB)","ti-building"],["JBC","SJKC","ti-books"],["JBD","SJKT","ti-book"]];
 const C = {
-  over: { s:"#FF4D6D", bg:"#FFE3EA", tx:"#C9184A", t:"Melebihi", f:"#FF4D6D" },
-  near: { s:"#FFB000", bg:"#FFF1C7", tx:"#8A5A00", t:"Hampir penuh", f:"#FFB000" },
-  ok:   { s:"#00C2A8", bg:"#D9F7F2", tx:"#00796B", t:"Ada ruang", f:"#00C2A8" }
+  over: { s:"var(--red)", bg:"var(--red-bg)", tx:"var(--red-tx)", t:"Melebihi", f:"var(--red)" },
+  near: { s:"var(--amb)", bg:"var(--amb-bg)", tx:"var(--amb-tx)", t:"Hampir penuh", f:"var(--amb)" },
+  ok:   { s:"var(--grn)", bg:"var(--grn-bg)", tx:"var(--grn-tx)", t:"Ada ruang", f:"var(--grn)" }
 };
 const STRIPE = "repeating-linear-gradient(120deg,rgba(255,255,255,.16) 0 2px,transparent 2px 6px)";
 const S = { j:"ALL", s:"ALL", q:"", n:20, o:null, bw:false };
@@ -107,29 +120,29 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">"
 function meter(r) {
   const s = C[st(r.p)];
   const bar = r.d > 0
-    ? `<div class="bl" style="flex:1;background:${STRIPE},${s.f}"></div><div class="dv" style="background:#111827"></div><div class="bl" style="width:${Math.max(Math.min(r.d / r.k, 0.4), 0.18) * 100}%;flex-shrink:0;background:${STRIPE},#C9184A"></div>`
+    ? `<div class="bl" style="flex:1;background:${STRIPE},${s.f}"></div><div class="dv" style="background:var(--ink)"></div><div class="bl" style="width:${Math.max(Math.min(r.d / r.k, 0.4), 0.18) * 100}%;flex-shrink:0;background:${STRIPE},var(--red-tx)"></div>`
     : `<div class="bl" style="width:calc(${Math.min(r.p * 100, 100)}% - 3px);flex-shrink:0;background:${STRIPE},${s.f}"></div><div class="dv"></div><div class="gr"></div>`;
   return `<span style="display:flex;align-items:center;justify-content:center;gap:6px"><span class="mt">${bar}</span><span class="pc" style="color:${s.tx}">${pct(r.p * 100)}</span></span>`;
 }
 function lab(r) {
-  if (r.d > 0) return `<span class="tg" style="background:#FFE3EA;color:#C9184A">Lebih ${r.d}</span>`;
-  if (r.d === 0) return `<span class="tg" style="background:#FFF1C7;color:#8A5A00">Penuh</span>`;
+  if (r.d > 0) return `<span class="tg" style="background:var(--red-bg);color:var(--red-tx)">Lebih ${r.d}</span>`;
+  if (r.d === 0) return `<span class="tg" style="background:var(--amb-bg);color:var(--amb-tx)">Penuh</span>`;
   const s = C[st(r.p)];
   return `<span class="tg" style="background:${s.bg};color:${s.tx}">${-r.d} tempat</span>`;
 }
 function detail(r) {
   const s = C[st(r.p)], x = r.parts;
   const msg = r.d > 0
-    ? `Sekolah ini <b style="color:#C9184A">melebihi kapasiti sebanyak ${r.d} murid</b> (${pct(r.p*100)}): ${r.l} lulus berbanding kapasiti ${r.k}.`
+    ? `Sekolah ini <b style="color:var(--red-tx)">melebihi kapasiti sebanyak ${r.d} murid</b> (${pct(r.p*100)}): ${r.l} lulus berbanding kapasiti ${r.k}.`
     : r.d === 0
-    ? `Sekolah ini <b style="color:#8A5A00">penuh tepat</b> (100.0%): ${r.l} lulus, kapasiti ${r.k}.`
+    ? `Sekolah ini <b style="color:var(--amb-tx)">penuh tepat</b> (100.0%): ${r.l} lulus, kapasiti ${r.k}.`
     : `Sekolah ini <b style="color:${s.tx}">boleh muat lagi ${-r.d} murid</b> (${pct(r.p*100)} terisi): ${r.l} lulus daripada kapasiti ${r.k}.`;
-  const ln = (a, b, cl) => `<div class="ln"><span class="sec">${a}</span><span class="v" style="${b === 0 && !cl ? "color:#9CA3AF;" : ""}${cl ? `color:${cl}` : ""}">${b}</span></div>`;
+  const ln = (a, b, cl) => `<div class="ln"><span class="sec">${a}</span><span class="v" style="${b === 0 && !cl ? "color:var(--muted);" : ""}${cl ? `color:${cl}` : ""}">${b}</span></div>`;
   const ap = [["A · Diluluskan sistem",x.A],["B · Lulus dari sekolah lain",x.B],["C · Kelulusan 5+ manual",x.C],["D · Kelulusan 6+ manual",x.D],["E · Rayuan online",x.E],["F · Bukan warganegara",x.F],["G · Lewat / ASBS",x.G]];
-  return `<div class="dt"><div style="margin-bottom:10px"><i class="ti ti-info-circle" style="color:#7C3AED"></i> ${msg}</div><div class="dg">
-    <div class="db"><div class="t" style="color:#7C3AED"><i class="ti ti-file-text"></i> Permohonan</div>${ln("Mohon 5+",r.m5)}${ln("Mohon 6+",r.m6)}${ln("Jumlah mohon",r.m5+r.m6)}${ln("Ke sekolah lain",r.keLain)}</div>
-    <div class="db"><div class="t" style="color:#00796B"><i class="ti ti-user-check"></i> Kelulusan</div>${ap.map(a => ln(a[0], a[1])).join("")}
-      <div style="border-top:2px solid #151515;margin-top:6px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"#111827")}${ln("Warganegara",r.l-r.bw,"#1F5FD1")}${ln("Kapasiti",r.k,"#111827")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"#C9184A":"#00796B")}</div></div>
+  return `<div class="dt"><div style="margin-bottom:10px"><i class="ti ti-info-circle" style="color:var(--acc)"></i> ${msg}</div><div class="dg">
+    <div class="db"><div class="t" style="color:var(--acc)"><i class="ti ti-file-text"></i> Permohonan</div>${ln("Mohon 5+",r.m5)}${ln("Mohon 6+",r.m6)}${ln("Jumlah mohon",r.m5+r.m6)}${ln("Ke sekolah lain",r.keLain)}</div>
+    <div class="db"><div class="t" style="color:var(--grn-tx)"><i class="ti ti-user-check"></i> Kelulusan</div>${ap.map(a => ln(a[0], a[1])).join("")}
+      <div style="border-top:2px solid var(--ink);margin-top:6px;padding-top:4px">${ln("Jumlah lulus (A–G)",r.l,"var(--ink)")}${ln("Warganegara",r.l-r.bw,"var(--wn-tx)")}${ln("Kapasiti",r.k,"var(--ink)")}${ln(r.d>0?"Lebih":"Muat lagi",Math.abs(r.d),r.d>0?"var(--red-tx)":"var(--grn-tx)")}</div></div>
   </div></div>`;
 }
 
@@ -152,36 +165,36 @@ function draw() {
   const tl = base.reduce((a, r) => a + r.l, 0), tb = base.reduce((a, r) => a + r.bw, 0), tw = tl - tb;
   const nb = base.filter(r => r.bw > 0).length, pw = tl ? tw / tl * 100 : 0, pb = tl ? tb / tl * 100 : 0;
   $("wg").innerHTML = `<div class="wg3">
-    <div class="wgc" style="background:#E0EDFF;color:#1F5FD1"><div class="t"><i class="ti ti-flag"></i>Warganegara</div><div class="v">${fmt(tw)}</div><div class="s">${pct(pw)} daripada lulus</div></div>
-    <div class="wgc" style="background:#FFE0F0;color:#C2185B"><div class="t"><i class="ti ti-world"></i>Bukan warganegara</div><div class="v">${fmt(tb)}</div><div class="s">${pct(pb)} · di ${nb} sekolah</div></div>
-    <div class="wgc" style="background:#F3F4F6;color:#111827"><div class="t"><i class="ti ti-users"></i>Jumlah murid lulus</div><div class="v">${fmt(tl)}</div><div class="s sec">warganegara + bukan warganegara</div></div></div>
-    <div class="split"><div style="width:${pw}%;background:#3A86FF"></div>${tb ? `<div style="width:max(${pb}%,6px);background:#FF006E"></div>` : ""}</div>`;
-  $("bwb").innerHTML = `<span role="button" id="bwt" class="tg" style="cursor:pointer;padding:5px 10px;background:${S.bw ? "#FF006E" : "#FFE0F0"};color:${S.bw ? "#fff" : "#C2185B"}"><i class="ti ti-filter"></i> ${S.bw ? "Papar semua sekolah" : "Tapis sekolah ada bukan warganegara"}</span>`;
+    <div class="wgc" style="background:var(--wn-bg);color:var(--wn-tx)"><div class="t"><i class="ti ti-flag"></i>Warganegara</div><div class="v">${fmt(tw)}</div><div class="s">${pct(pw)} daripada lulus</div></div>
+    <div class="wgc" style="background:var(--bwn-bg);color:var(--bwn-tx)"><div class="t"><i class="ti ti-world"></i>Bukan warganegara</div><div class="v">${fmt(tb)}</div><div class="s">${pct(pb)} · di ${nb} sekolah</div></div>
+    <div class="wgc" style="background:var(--soft);color:var(--ink)"><div class="t"><i class="ti ti-users"></i>Jumlah murid lulus</div><div class="v">${fmt(tl)}</div><div class="s sec">warganegara + bukan warganegara</div></div></div>
+    <div class="split"><div style="width:${pw}%;background:var(--wn)"></div>${tb ? `<div style="width:max(${pb}%,6px);background:var(--bwn)"></div>` : ""}</div>`;
+  $("bwb").innerHTML = `<span role="button" id="bwt" class="tg" style="cursor:pointer;padding:5px 10px;background:${S.bw ? "var(--bwn)" : "var(--bwn-bg)"};color:${S.bw ? "#fff" : "var(--bwn-tx)"}"><i class="ti ti-filter"></i> ${S.bw ? "Papar semua sekolah" : "Tapis sekolah ada bukan warganegara"}</span>`;
   $("bwt").onclick = () => { S.bw = !S.bw; draw(); };
 
   // KPI
   const c = { over: 0, near: 0, ok: 0 }; base.forEach(r => c[st(r.p)]++);
-  const K = [["ALL","Jumlah sekolah",base.length,"#7C3AED","ti-school","#EDE4FF","#5B21B6","Semua"],
-             ["over","Melebihi kapasiti",c.over,"#FF4D6D","ti-alert-circle",C.over.bg,C.over.tx,"> 100%"],
-             ["near","Hampir penuh",c.near,"#FFB000","ti-alert-triangle",C.near.bg,C.near.tx,"90 – 100%"],
-             ["ok","Ada ruang",c.ok,"#00C2A8","ti-circle-check",C.ok.bg,C.ok.tx,"< 90%"]];
+  const K = [["ALL","Jumlah sekolah",base.length,"var(--acc)","ti-school","var(--acc-bg)","var(--acc-tx)","Semua"],
+             ["over","Melebihi kapasiti",c.over,"var(--red)","ti-alert-circle",C.over.bg,C.over.tx,"> 100%"],
+             ["near","Hampir penuh",c.near,"var(--amb)","ti-alert-triangle",C.near.bg,C.near.tx,"90 – 100%"],
+             ["ok","Ada ruang",c.ok,"var(--grn)","ti-circle-check",C.ok.bg,C.ok.tx,"< 90%"]];
   $("kp").innerHTML = K.map(([v, t, n, cl, ic, bg, tx, sub]) => `<div class="k" data-v="${v}" style="${S.s === v ? `border:2px solid ${cl};padding:12px` : ""}">
     <div class="top2"><div class="ic" style="background:${cl}"><i class="ti ${ic}"></i></div><span class="tg" style="background:${bg};color:${tx}">${sub}</span></div>
     <div class="num">${n}</div><div class="sec">${t}</div></div>`).join("");
   document.querySelectorAll("#kp .k").forEach(e => e.onclick = () => { S.s = e.dataset.v; draw(); });
 
   // Donut
-  const tn = base.length || 1; let off = 25, svg = `<circle cx="21" cy="21" r="15.9" fill="none" stroke="#F3F4F6" stroke-width="6"/>`;
-  ["over","near","ok"].forEach(s => { const v = c[s] / tn * 100; if (v) { svg += `<circle cx="21" cy="21" r="15.9" fill="none" stroke="${C[s].s}" stroke-width="6" stroke-dasharray="${v} ${100 - v}" stroke-dashoffset="${off}"/>`; off -= v; } });
-  svg += `<text x="21" y="22" text-anchor="middle" font-size="7" font-weight="600" fill="#0F172A">${base.length}</text><text x="21" y="28" text-anchor="middle" font-size="3.6" fill="#6B7280">sekolah</text>`;
+  const tn = base.length || 1; let off = 25, svg = `<circle cx="21" cy="21" r="15.9" fill="none" style="stroke:var(--soft)" stroke-width="6"/>`;
+  ["over","near","ok"].forEach(s => { const v = c[s] / tn * 100; if (v) { svg += `<circle cx="21" cy="21" r="15.9" fill="none" style="stroke:${C[s].s}" stroke-width="6" stroke-dasharray="${v} ${100 - v}" stroke-dashoffset="${off}"/>`; off -= v; } });
+  svg += `<text x="21" y="22" text-anchor="middle" font-size="7" font-weight="600" style="fill:var(--ink)">${base.length}</text><text x="21" y="28" text-anchor="middle" font-size="3.6" style="fill:var(--muted)">sekolah</text>`;
   $("dn").innerHTML = svg;
-  $("lg").innerHTML = ["over","near","ok"].map(s => `<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0"><span style="display:flex;align-items:center;gap:6px;color:#374151"><span style="width:10px;height:10px;border-radius:3px;background:${C[s].s}"></span>${C[s].t}</span><span style="font-weight:500">${c[s]} <span class="sec" style="font-weight:400">(${pct(c[s] / tn * 100)})</span></span></div>`).join("");
+  $("lg").innerHTML = ["over","near","ok"].map(s => `<div style="display:flex;justify-content:space-between;align-items:center;margin:6px 0"><span style="display:flex;align-items:center;gap:6px;color:var(--ink)"><span style="width:10px;height:10px;border-radius:3px;background:${C[s].s}"></span>${C[s].t}</span><span style="font-weight:500">${c[s]} <span class="sec" style="font-weight:400">(${pct(c[s] / tn * 100)})</span></span></div>`).join("");
 
   // Status ikut jenis
   $("sj").innerHTML = JN.slice(1).map(([v, t]) => {
     const g = sq.filter(r => r.j === v), cc = { over: 0, near: 0, ok: 0 }; g.forEach(r => cc[st(r.p)]++);
-    return `<div style="margin:8px 0"><div style="font-size:12.5px;display:flex;justify-content:space-between;color:#374151"><span>${t}</span><span class="sec">${g.length}</span></div>
-      <div style="display:flex;height:16px;border-radius:8px;overflow:hidden;margin-top:3px;gap:2px;background:#F3F4F6">${["over","near","ok"].map(s => cc[s] ? `<div title="${C[s].t}: ${cc[s]}" style="width:${cc[s] / (g.length || 1) * 100}%;background:${C[s].s};font-size:10.5px;color:#fff;text-align:center;line-height:16px">${cc[s]}</div>` : "").join("")}</div></div>`;
+    return `<div style="margin:8px 0"><div style="font-size:12.5px;display:flex;justify-content:space-between;color:var(--ink)"><span>${t}</span><span class="sec">${g.length}</span></div>
+      <div style="display:flex;height:16px;border-radius:8px;overflow:hidden;margin-top:3px;gap:2px;background:var(--soft)">${["over","near","ok"].map(s => cc[s] ? `<div title="${C[s].t}: ${cc[s]}" style="width:${cc[s] / (g.length || 1) * 100}%;background:${C[s].s};font-size:10.5px;color:#fff;text-align:center;line-height:16px">${cc[s]}</div>` : "").join("")}</div></div>`;
   }).join("");
 
   // Senarai sekolah
@@ -192,14 +205,14 @@ function draw() {
     const op = S.o === r.cd;
     return `<div class="row gd${op ? " open" : ""}" data-c="${r.cd}">
       <span class="tg code">${r.cd}</span>
-      <span class="nm">${esc(r.n)}${S.bw ? ` <span class="tg" style="background:#FFE0F0;color:#C2185B">${r.bw} BW</span>` : ""}</span>
+      <span class="nm">${esc(r.n)}${S.bw ? ` <span class="tg" style="background:var(--bwn-bg);color:var(--bwn-tx)">${r.bw} BW</span>` : ""}</span>
       <span class="c">${r.c}</span>
-      <span class="c" style="color:${r.m > CFG.MAX_PER_CLASS ? "#C9184A" : "#374151"}">${r.m.toFixed(1)}</span>
+      <span class="c" style="color:${r.m > CFG.MAX_PER_CLASS ? "var(--red-tx)" : "var(--ink)"}">${r.m.toFixed(1)}</span>
       <span class="c" style="font-weight:600">${r.l}</span>
       <span class="c sec">${r.k}</span>
       ${meter(r)}
       <span class="c">${lab(r)}</span>
-      <i class="ti ${op ? "ti-chevron-up" : "ti-chevron-down"}" style="color:#9CA3AF"></i></div>${op ? detail(r) : ""}`;
+      <i class="ti ${op ? "ti-chevron-up" : "ti-chevron-down"}" style="color:var(--muted)"></i></div>${op ? detail(r) : ""}`;
   }).join("") : `<div class="empty">Tiada sekolah untuk penapis ini.</div>`;
   document.querySelectorAll("#br .row").forEach(e => e.onclick = () => { S.o = S.o === e.dataset.c ? null : e.dataset.c; draw(); });
 }
