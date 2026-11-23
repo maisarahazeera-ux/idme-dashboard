@@ -6,10 +6,10 @@ const fmt = n => n.toLocaleString("en-US");
 const pct = v => v.toFixed(1) + "%";
 
 /* ---------- 0. Tema ---------- */
-const THEMES = [["pop","Pop bold"],["ios","iOS"],["gelap","Gelap"]];
-function getTheme() { try { return localStorage.getItem("idme-theme") || CFG.DEFAULT_THEME || "pop"; } catch (e) { return CFG.DEFAULT_THEME || "pop"; } }
+const THEMES = [["ceria","Ceria"],["asal","Asal"],["gelap","Gelap"]];
+function getTheme() { try { return localStorage.getItem("idme-theme") || CFG.DEFAULT_THEME || "asal"; } catch (e) { return CFG.DEFAULT_THEME || "asal"; } }
 function setTheme(t) {
-  if (!THEMES.some(x => x[0] === t)) t = "pop";
+  if (!THEMES.some(x => x[0] === t)) t = "asal";
   document.body.className = "th-" + t;
   try { localStorage.setItem("idme-theme", t); } catch (e) {}
   return t;

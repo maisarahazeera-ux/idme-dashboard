@@ -17,7 +17,7 @@ Before this, officers had to scroll through a shared Google Sheet of almost 100 
 - Search by school name or code, with tabs to filter by school type (SK, SJK(C), SJK(T))
 - Summary cards that also work as filters, a status donut chart and a citizenship summary
 - School list sorted from the highest percentage. Show 20, 50 or 100 schools, and click a school to see its applications by age group and the approval breakdown (A to G)
-- Three themes (Pop, iOS, Dark), saved in the user's browser
+- Three themes (Ceria, Asal, Gelap), saved in the user's browser
 - Responsive layout, so it can be opened on a phone
 
 ## Tech stack

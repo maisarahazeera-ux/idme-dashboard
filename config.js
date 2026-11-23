@@ -14,7 +14,7 @@ window.IDME_CONFIG = {
 
   // Tema asal: "pop", "ios", "gelap"
   // (Pengguna boleh tukar sendiri; pilihan disimpan dalam browser masing-masing)
-  DEFAULT_THEME: "pop",
+  DEFAULT_THEME: "asal",
 
   // Had murid sekelas (nilai lebih dari ini ditanda merah)
   MAX_PER_CLASS: 35

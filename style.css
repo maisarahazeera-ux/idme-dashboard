@@ -1,5 +1,5 @@
 /* ===== Tema (tukar melalui menu "Tema" di atas) ===== */
-.th-pop{
+.th-ceria{
   --font:"Trebuchet MS","Segoe UI",sans-serif;
   --page:#FDF0C4; --bg:#FFF8DC; --card:#FFFFFF; --ink:#151515; --muted:#555555; --soft:#F1EAD0; --hover:#FFF3B0; --track:#DCDCE0;
   --line:#151515; --bw:2px; --bw2:1.5px; --frame-bw:2.5px; --r:14px; --pr:10px;
@@ -15,7 +15,7 @@
   --legend-bg:#FFF3B0; --legend-border:2px dashed #151515; --dt-bg:#FFF8DC; --ln:1px dashed #151515;
   --wgc-border:2px solid #151515; --weight:700;
 }
-.th-ios{
+.th-asal{
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI","Helvetica Neue",sans-serif;
   --page:#E5E5EA; --bg:#F2F2F7; --card:#FFFFFF; --ink:#1C1C1E; --muted:#8E8E93; --soft:#F2F2F7; --hover:#F2F2F7; --track:#E5E5EA;
   --line:#E5E5EA; --bw:1px; --bw2:0px; --frame-bw:0px; --r:16px; --pr:10px;
