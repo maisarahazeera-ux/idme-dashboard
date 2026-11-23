@@ -6,8 +6,8 @@ Before this, officers had to scroll through a shared Google Sheet of almost 100 
 
 > The data contains school-level figures only, with no personal details of pupils.
 
-![Summary section](screenshots/idme-summary.jpg)
-![School list](screenshots/idme-schools.jpg)
+![Summary section](screenshots/idme-summary.png)
+![School list](screenshots/idme-schools.png)
 
 ## Features
 
